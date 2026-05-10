@@ -288,9 +288,10 @@ const T2MA = {
 
 function blankOk(input, accept) {
   var n = input.trim().toLowerCase();
-  if (n.length < 2) return false;
+  if (n.length === 0) return false;
   return accept.some(function(a) {
     var an = a.toLowerCase();
+    if (n.length < 2 || an.length < 2) return n === an;
     return n === an || n.includes(an) || an.includes(n);
   });
 }
