@@ -473,11 +473,9 @@ function render() {
   if (checked) {
     actions.appendChild(h("button", {className: "btn btn-secondary", onClick: function() { unlockQuiz(); }}, "Edit Answers"));
   }
-  var checkBtn = h("button", {
-    className: "btn btn-primary",
-    disabled: checked,
-    onClick: function() { checkAnswers(); }
-  }, checked ? "Answers Checked" : "Check Answers");
+  var checkAttrs = {className: "btn btn-primary", onClick: function() { checkAnswers(); }};
+  if (checked) checkAttrs.disabled = true;
+  var checkBtn = h("button", checkAttrs, checked ? "Answers Checked" : "Check Answers");
   actions.appendChild(checkBtn);
   app.appendChild(actions);
 
@@ -508,11 +506,9 @@ function renderShort(app, qs, ans, checked, isT1) {
     card.appendChild(h("div", {className: "q-number"}, "Q" + (idx + 1) + (checked ? (isOk ? " \u2714 Correct" : isWrong ? " \u2718 Review" : " \u2014 Unanswered") : (val.trim() ? " \u2022 Answered" : ""))));
     card.appendChild(h("div", {className: "q-text"}, q.q));
 
-    var ta = h("textarea", {
-      value: val,
-      placeholder: "Type your answer here...",
-      disabled: checked
-    });
+    var taAttrs = {value: val, placeholder: "Type your answer here..."};
+    if (checked) taAttrs.disabled = true;
+    var ta = h("textarea", taAttrs);
     ta.addEventListener("input", function(e) {
       var key = isT1 ? "t1Short" : "t2Short";
       state[key][q.id] = e.target.value;
@@ -552,7 +548,9 @@ function renderId(app, qs, ans, checked, isT1) {
 
       var row = h("div", {className: "blank-row"});
       row.appendChild(h("span", {className: "blank-label"}, b.label + ":"));
-      var inp = h("input", {type: "text", value: val, placeholder: "Blank " + (i + 1), disabled: checked});
+      var inpAttrs = {type: "text", value: val, placeholder: "Blank " + (i + 1)};
+      if (checked) inpAttrs.disabled = true;
+      var inp = h("input", inpAttrs);
       inp.addEventListener("input", function(e) {
         var stateKey = isT1 ? "t1Id" : "t2Id";
         state[stateKey][key] = e.target.value;
@@ -621,10 +619,14 @@ function renderMatch(app, sec, ans, checked, isT1) {
     row.appendChild(h("span", {className: "match-term"}, (idx + 1) + ". " + p.term));
 
     var selectWrap = h("div", {className: "match-select"});
-    var sel = h("select", {disabled: checked});
+    var selAttrs = {};
+    if (checked) selAttrs.disabled = true;
+    var sel = h("select", selAttrs);
     sel.appendChild(h("option", {value: ""}, "-- Select --"));
     sec.options.forEach(function(o) {
-      var opt = h("option", {value: o, selected: val === o}, o);
+      var optAttrs = {value: o};
+      if (val === o) optAttrs.selected = true;
+      var opt = h("option", optAttrs, o);
       sel.appendChild(opt);
     });
     sel.addEventListener("change", function(e) {
