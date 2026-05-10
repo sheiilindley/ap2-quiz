@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A&P II Practice Exams</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#3182ce;--blue-bg:#ebf8ff;--green:#38a169;--green-bg:#f0fff4;
+  --red:#e53e3e;--red-bg:#fff5f5;--gray-50:#f7fafc;--gray-100:#edf2f7;
+  --gray-200:#e2e8f0;--gray-300:#cbd5e0;--gray-500:#718096;--gray-700:#2d3748;
+  --gray-900:#1a202c;--radius:8px;--shadow:0 1px 3px rgba(0,0,0,.1);
+}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  line-height:1.6;color:var(--gray-900);background:#fff;padding:0;
+}
+.container{max-width:900px;margin:0 auto;padding:24px 16px}
+h1{font-size:1.75rem;font-weight:700;margin-bottom:4px}
+.subtitle{color:var(--gray-500);font-size:.875rem;margin-bottom:20px}
+.stats-bar{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;
+  background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius);padding:16px;margin-bottom:20px;
+}
+.stat{text-align:center}
+.stat-value{font-size:1.5rem;font-weight:700;color:var(--gray-900)}
+.stat-label{font-size:.75rem;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px}
+.stat-value.green{color:var(--green)}
+.stat-value.red{color:var(--red)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tab{
+  padding:8px 16px;border-radius:20px;border:1px solid var(--gray-200);
+  background:#fff;cursor:pointer;font-size:.875rem;font-weight:500;
+  transition:all .15s;user-select:none;
+}
+.tab:hover{border-color:var(--blue);color:var(--blue)}
+.tab.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.sub-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.sub-tab{
+  padding:6px 12px;border-radius:16px;border:1px solid var(--gray-200);
+  background:#fff;cursor:pointer;font-size:.8rem;font-weight:500;transition:all .15s;
+}
+.sub-tab:hover{border-color:var(--blue)}
+.sub-tab.active{background:var(--blue-bg);color:var(--blue);border-color:var(--blue)}
+.actions{display:flex;gap:8px;justify-content:flex-end;margin-bottom:20px;flex-wrap:wrap}
+.btn{
+  padding:10px 20px;border-radius:var(--radius);font-size:.875rem;font-weight:600;
+  cursor:pointer;border:none;transition:all .15s;
+}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:#2b6cb0}
+.btn-primary:disabled{background:var(--gray-300);cursor:not-allowed}
+.btn-secondary{background:var(--gray-100);color:var(--gray-700);border:1px solid var(--gray-200)}
+.btn-secondary:hover{background:var(--gray-200)}
+.card{
+  border:1px solid var(--gray-200);border-radius:var(--radius);
+  padding:16px;margin-bottom:12px;background:#fff;box-shadow:var(--shadow);
+}
+.card.correct{border-color:var(--green);background:var(--green-bg)}
+.card.incorrect{border-color:var(--red);background:var(--red-bg)}
+.card.answered{border-left:3px solid var(--blue)}
+.q-number{font-weight:700;color:var(--gray-500);font-size:.8rem;margin-bottom:4px}
+.q-text{font-weight:500;margin-bottom:12px}
+textarea{
+  width:100%;padding:10px;border:1px solid var(--gray-200);border-radius:var(--radius);
+  font-family:inherit;font-size:.875rem;resize:vertical;min-height:80px;
+  transition:border-color .15s;
+}
+textarea:focus{outline:none;border-color:var(--blue)}
+textarea:disabled{background:var(--gray-50);color:var(--gray-700)}
+input[type="text"]{
+  width:100%;padding:8px 10px;border:1px solid var(--gray-200);border-radius:var(--radius);
+  font-family:inherit;font-size:.875rem;transition:border-color .15s;
+}
+input[type="text"]:focus{outline:none;border-color:var(--blue)}
+input[type="text"]:disabled{background:var(--gray-50);color:var(--gray-700)}
+.blank-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.blank-label{min-width:120px;font-size:.8rem;color:var(--gray-500);font-weight:500}
+.blank-input{flex:1;min-width:150px}
+.blank-result{font-size:.8rem;font-weight:600;white-space:nowrap}
+.blank-result.correct{color:var(--green)}
+.blank-result.incorrect{color:var(--red)}
+.model-answer{
+  margin-top:12px;padding:12px;border-radius:var(--radius);font-size:.85rem;line-height:1.5;
+}
+.model-answer.success{background:var(--green-bg);border:1px solid var(--green)}
+.model-answer.warning{background:#fffbeb;border:1px solid #d69e2e}
+.model-answer.neutral{background:var(--gray-50);border:1px solid var(--gray-200)}
+.model-answer-title{font-weight:700;margin-bottom:4px;font-size:.8rem;text-transform:uppercase}
+.mc-options{display:flex;flex-direction:column;gap:6px}
+.mc-opt{
+  padding:10px 14px;border:1px solid var(--gray-200);border-radius:var(--radius);
+  cursor:pointer;font-size:.875rem;transition:all .15s;user-select:none;
+}
+.mc-opt:hover{border-color:var(--blue);background:var(--blue-bg)}
+.mc-opt.selected{border-color:var(--blue);background:var(--blue-bg);font-weight:500}
+.mc-opt.correct-answer{border-color:var(--green);background:var(--green-bg)}
+.mc-opt.wrong-answer{border-color:var(--red);background:var(--red-bg)}
+.mc-opt.disabled{cursor:not-allowed;opacity:.8}
+.match-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+.match-term{min-width:200px;font-weight:500;font-size:.875rem}
+.match-select{flex:1;min-width:200px}
+.match-select select{
+  width:100%;padding:8px 10px;border:1px solid var(--gray-200);border-radius:var(--radius);
+  font-family:inherit;font-size:.875rem;background:#fff;
+}
+.match-select select:disabled{background:var(--gray-50)}
+.match-result{font-size:.8rem;font-weight:600;white-space:nowrap}
+.match-result.correct{color:var(--green)}
+.match-result.incorrect{color:var(--red)}
+.section-note{color:var(--gray-500);font-size:.8rem;margin-bottom:16px}
+.divider{height:1px;background:var(--gray-200);margin:20px 0}
+.footer{color:var(--gray-500);font-size:.75rem;text-align:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--gray-200)}
+@media(max-width:640px){
+  .stats-bar{grid-template-columns:repeat(2,1fr)}
+  .stat-value{font-size:1.2rem}
+  .match-term{min-width:auto;width:100%}
+  .match-select{min-width:auto;width:100%}
+  .blank-label{min-width:80px}
+  h1{font-size:1.4rem}
+}
+@media print{
+  .tabs,.sub-tabs,.actions,.btn,textarea,input,select{display:none!important}
+  .card{break-inside:avoid;border:1px solid #000;margin-bottom:8px}
+  .model-answer{display:block!important}
+}
+</style>
+</head>
+<body>
+<div class="container" id="app"></div>
+<script>
+(function(){
+"use strict";
+
+const STORAGE_KEY = "ap2-quiz-state";
+
+// ── Quiz Data ──
+
+const T1S = [
+  {id:"t1s1",q:"Describe the function of sustentacular (Sertoli) cells. List at least 5 functions.",kw:["blood-testis barrier","abp","androgen-binding","inhibin","phagocyt","nourish","spermatogenesis","testicular fluid"],ans:"Sertoli cells: (1) form the blood-testis barrier via tight junctions, (2) secrete androgen-binding protein (ABP) to concentrate testosterone, (3) secrete inhibin to inhibit FSH via negative feedback, (4) phagocytize excess cytoplasm from spermatids, (5) nourish and support developing sperm, (6) secrete testicular fluid, (7) secrete anti-Mullerian hormone during embryonic development."},
+  {id:"t1s2",q:"Explain how erections are generated. Include which division of the nervous system controls erection vs. ejaculation.",kw:["parasympathetic","nitric oxide","smooth muscle","relax","erectile tissue","sympathetic","ejaculation","vasodilation"],ans:"Erection is controlled by the parasympathetic nervous system. Sexual stimulation triggers parasympathetic signals that release nitric oxide (NO), which relaxes smooth muscle in the walls of penile arteries and erectile bodies (corpora cavernosa and corpus spongiosum), causing vasodilation and engorgement. Ejaculation is controlled by the sympathetic nervous system."},
+  {id:"t1s3",q:"Describe the two stages of ejaculation (emission and expulsion) and which nervous system controls each.",kw:["emission","expulsion","sympathetic","somatic","smooth muscle","reproductive ducts","bulbospongiosus","prostate","seminal vesicle"],ans:"Emission (sympathetic): smooth muscle in the walls of the reproductive ducts, prostate, and seminal vesicles contracts to propel sperm and secretions into the prostatic urethra. The internal urethral sphincter closes to prevent retrograde ejaculation. Expulsion (somatic motor): rapid rhythmic contractions of the bulbospongiosus and ischiocavernosus muscles propel semen out of the penile urethra."},
+  {id:"t1s4",q:"Explain the difference between the fast block and slow block to polyspermy.",kw:["fast block","depolarization","membrane","slow block","cortical","granule","zona pellucida","calcium"],ans:"Fast block: immediate depolarization of the oocyte membrane (from -70mV to +20mV) prevents additional sperm from fusing. Temporary, lasts only a few seconds. Slow block: cortical granules release their contents (cortical reaction) via exocytosis, triggered by Ca2+ release. Enzymes destroy sperm receptors on the zona pellucida and cause the zona to harden, creating a permanent barrier to polyspermy."},
+  {id:"t1s5",q:"What is capacitation? Where does it begin and where does it finish?",kw:["capacitation","female reproductive tract","cholesterol","membrane","acrosome","uterine tube","hours","hyperactive"],ans:"Capacitation is the functional maturation of sperm in the female reproductive tract that takes several hours. It involves removal of cholesterol from the sperm plasma membrane and removal of glycoproteins and proteins that coat the acrosome. This destabilizes the membrane, enabling the acrosomal reaction. It begins in the uterus (vagina/cervix) and finishes in the uterine tube. Capacitated sperm also become hyperactive (whip-like motility)."},
+  {id:"t1s6",q:"Describe the HPG axis in males. Include all three tiers and the feedback mechanisms.",kw:["hypothalamus","gnrh","anterior pituitary","fsh","lh","testosterone","inhibin","negative feedback","sertoli","leydig"],ans:"Tier 1 - Hypothalamus: releases GnRH in pulses. Tier 2 - Anterior pituitary: GnRH stimulates release of FSH and LH. Tier 3 - Testes: LH stimulates Leydig (interstitial) cells to produce testosterone. FSH stimulates Sertoli cells to support spermatogenesis. Negative feedback: testosterone inhibits both hypothalamus (GnRH) and anterior pituitary (LH). Inhibin from Sertoli cells inhibits FSH specifically."},
+  {id:"t1s7",q:"Describe the HPG axis in females. Include the switch from negative to positive feedback.",kw:["hypothalamus","gnrh","anterior pituitary","fsh","lh","estrogen","negative feedback","positive feedback","lh surge","ovulation"],ans:"Same three tiers: Hypothalamus (GnRH) \u2192 Anterior pituitary (FSH, LH) \u2192 Ovaries (estrogen, progesterone). During the follicular phase, low-to-moderate estrogen exerts negative feedback on GnRH, FSH, and LH. As the dominant follicle matures, estrogen levels rise sharply. At a critical threshold, estrogen switches to positive feedback, causing a massive LH surge (and smaller FSH surge) that triggers ovulation. After ovulation, the corpus luteum secretes progesterone (and estrogen), which reverts to negative feedback."},
+  {id:"t1s8",q:"What is the function of the blood-testis barrier? Why is it necessary?",kw:["blood-testis barrier","tight junction","sertoli","immune","antigen","sperm","meiosis","autoimmune","protect"],ans:"The blood-testis barrier is formed by tight junctions between adjacent Sertoli cells. Function: it isolates developing sperm cells (from spermatocytes onward) from the immune system. This is necessary because sperm are produced beginning at puberty \u2014 long after the immune system has established self-tolerance. Sperm carry unique surface antigens that would be recognized as foreign by the immune system, triggering an autoimmune response if exposed."},
+  {id:"t1s9",q:"Explain the difference between the stratum functionalis and stratum basalis of the endometrium.",kw:["functionalis","basalis","shed","retained","menstruation","spiral","straight","regenerate","superficial","deep"],ans:"Stratum functionalis: the superficial layer that is shed during menstruation. Contains spiral arteries and uterine glands. Responds to ovarian hormones (estrogen and progesterone) \u2014 thickens during the proliferative and secretory phases. Stratum basalis: the deep basal layer that is retained during menstruation. Contains straight arteries. Serves as the regenerative layer that gives rise to a new functionalis each cycle."},
+  {id:"t1s10",q:"Describe the process of oogenesis from oogonia to ovum. Include where meiosis pauses.",kw:["oogonia","primary oocyte","prophase i","secondary oocyte","metaphase ii","ovulation","fertilization","polar body","meiosis"],ans:"Oogonia (diploid, 2n) undergo mitosis during fetal development, then begin meiosis I to become primary oocytes. Primary oocytes arrest in prophase I (before birth). At puberty, with each cycle, a primary oocyte completes meiosis I at ovulation \u2192 producing one large secondary oocyte + one small first polar body. The secondary oocyte immediately begins meiosis II but arrests in metaphase II. Meiosis II is completed only upon fertilization \u2192 producing the ovum + a second polar body."},
+  {id:"t1s11",q:"Compare and contrast vasectomy and tubal ligation (procedure, effect on hormones, reversibility).",kw:["vasectomy","tubal ligation","ductus deferens","uterine tube","hormones","unaffected","reversible","reversal","steriliz"],ans:"Vasectomy: surgical cutting/sealing of the ductus (vas) deferens. Prevents sperm from entering semen. Hormones unaffected (testosterone still produced, enters bloodstream). Potentially reversible (vasovasostomy), but success rate decreases over time. Tubal ligation: surgical cutting/sealing/clamping of the uterine (Fallopian) tubes. Prevents oocyte from meeting sperm. Hormones unaffected (ovarian cycle continues normally). Potentially reversible, but success is variable. Both are considered permanent sterilization."},
+  {id:"t1s12",q:"What is an ectopic pregnancy? Where does it most commonly occur?",kw:["ectopic","implant","outside","uterus","uterine tube","fallopian","emergency","rupture"],ans:"An ectopic pregnancy occurs when a fertilized egg implants outside the uterus. Most commonly (~95%) in the uterine (Fallopian) tube (tubal pregnancy), usually the ampulla. Can also occur in the ovary, abdominal cavity, or cervix. It is a medical emergency because the tube cannot support a growing embryo and may rupture, causing life-threatening hemorrhage."},
+  {id:"t1s13",q:"Describe the role of peg cells. What stimulates them?",kw:["peg","nonciliated","secrete","fluid","nourish","oocyte","sperm","estrogen","uterine tube"],ans:"Peg cells are nonciliated secretory cells in the lining of the uterine tube. They produce a nutrient-rich fluid that nourishes both the oocyte and sperm, and facilitates capacitation. They are stimulated by estrogen (peak activity during the follicular/ovulatory phase when estrogen is high)."},
+  {id:"t1s14",q:"Explain the hormonal changes during the ovarian/uterine cycle phases (menstrual, proliferative, ovulation, secretory).",kw:["menstrual","proliferative","ovulation","secretory","estrogen","progesterone","fsh","lh","lh surge","corpus luteum","functionalis"],ans:"Menstrual phase (days 1-5): low estrogen and progesterone; spiral arteries constrict, functionalis sheds. Proliferative phase (days 6-14): FSH stimulates follicle growth; rising estrogen rebuilds the endometrium, thickens it, develops new spiral arteries and glands. Ovulation (day 14): estrogen peaks, switches to positive feedback, LH surge triggers ovulation. Secretory phase (days 15-28): corpus luteum secretes progesterone (and estrogen); endometrium becomes edematous, glands secrete glycogen-rich fluid preparing for implantation. If no fertilization, corpus luteum degenerates, hormones drop, cycle restarts."},
+  {id:"t1s15",q:"Describe spermiogenesis. How does it differ from spermatogenesis?",kw:["spermiogenesis","spermatid","spermatozoa","acrosome","golgi","flagellum","mitochondria","cytoplasm","no division","differentiation"],ans:"Spermiogenesis is the final stage of spermatogenesis \u2014 the differentiation (not division) of round spermatids into streamlined spermatozoa. Steps: (1) Golgi apparatus forms the acrosome (enzyme cap), (2) centrioles form the flagellum, (3) mitochondria arrange around the midpiece, (4) most cytoplasm is shed (phagocytized by Sertoli cells), (5) nucleus condenses. Spermatogenesis refers to the entire process from spermatogonium to spermatozoa (including mitosis + meiosis + spermiogenesis). Spermiogenesis involves no cell division \u2014 only morphological transformation."}
+];
+
+const T1I = [
+  {id:"t1i1",q:"The male sperm pathway in order: Testes \u2192 _____ \u2192 _____ \u2192 _____ \u2192 _____ \u2192 _____ \u2192 Prostatic urethra \u2192 Membranous urethra \u2192 Penile urethra",blanks:[{label:"1",accept:["seminiferous tubules"]},{label:"2",accept:["epididymis"]},{label:"3",accept:["ductus deferens","vas deferens"]},{label:"4",accept:["ampulla"]},{label:"5",accept:["ejaculatory duct"]}]},
+  {id:"t1i2",q:"The female pathway: Ovary \u2192 _____ \u2192 _____ \u2192 _____ (fertilization here) \u2192 _____ \u2192 Uterus",blanks:[{label:"1",accept:["fimbriae"]},{label:"2",accept:["infundibulum"]},{label:"3 (fertilization)",accept:["ampulla"]},{label:"4",accept:["isthmus"]}]},
+  {id:"t1i3",q:"Label sperm: The _____ contains digestive enzymes to penetrate the oocyte.",blanks:[{label:"Structure",accept:["acrosome"]}]},
+  {id:"t1i4",q:"Label sperm: The _____ region is packed with mitochondria for ATP production.",blanks:[{label:"Region",accept:["midpiece","middle piece"]}]},
+  {id:"t1i5",q:"The three layers of the uterine wall from outer to inner:",blanks:[{label:"Outermost",accept:["perimetrium"]},{label:"Middle",accept:["myometrium"]},{label:"Innermost",accept:["endometrium"]}]},
+  {id:"t1i6",q:"The two sub-layers of the endometrium:",blanks:[{label:"Shed during menstruation",accept:["stratum functionalis","functionalis"]},{label:"Retained",accept:["stratum basalis","basalis"]}]},
+  {id:"t1i7",q:"_____ cells secrete testosterone in response to LH.",blanks:[{label:"Cell type",accept:["leydig","interstitial"]}]},
+  {id:"t1i8",q:"_____ cells form the blood-testis barrier via tight junctions.",blanks:[{label:"Cell type",accept:["sertoli","sustentacular"]}]},
+  {id:"t1i9",q:"The corpus luteum secretes primarily _____ (hormone).",blanks:[{label:"Hormone",accept:["progesterone"]}]},
+  {id:"t1i10",q:"After degeneration, the corpus luteum becomes the corpus _____.",blanks:[{label:"Name",accept:["albicans"]}]},
+  {id:"t1i11",q:"_____ is the hormone from the embryonic chorion that maintains the corpus luteum.",blanks:[{label:"Hormone",accept:["hcg","human chorionic gonadotropin"]}]},
+  {id:"t1i12",q:"Fertilization normally occurs in the _____ of the uterine tube.",blanks:[{label:"Region",accept:["ampulla"]}]},
+  {id:"t1i13",q:"The _____ million oogonia at 7 months fetal \u2192 _____ million primary oocytes at birth \u2192 _____ thousand at puberty.",blanks:[{label:"Fetal (millions)",accept:["7","6-7"]},{label:"Birth (millions)",accept:["2","1-2"]},{label:"Puberty (thousands)",accept:["300","400","300-400","300,000","400,000"]}]},
+  {id:"t1i14",q:"Spermatogenesis produces _____ sperm from one spermatogonium; oogenesis produces _____ ovum/ova.",blanks:[{label:"Sperm count",accept:["4","four"]},{label:"Ovum count",accept:["1","one"]}]},
+  {id:"t1i15",q:"Seminal vesicles contribute ~_____% of semen volume; prostate contributes ~_____% .",blanks:[{label:"Seminal vesicles %",accept:["60","70","60-70"]},{label:"Prostate %",accept:["25","30","25-30","20-30"]}]},
+  {id:"t1i16",q:"Normal semen pH is _____ to _____.",blanks:[{label:"Low end",accept:["7.2"]},{label:"High end",accept:["7.8","8.0","8"]}]},
+  {id:"t1i17",q:"The acrosome is derived from the _____ apparatus during spermiogenesis.",blanks:[{label:"Organelle",accept:["golgi"]}]},
+  {id:"t1i18",q:"_____ (hormone) from sustentacular cells inhibits FSH via negative feedback.",blanks:[{label:"Hormone",accept:["inhibin"]}]},
+  {id:"t1i19",q:"Erection is controlled by the _____ nervous system; ejaculation (emission) by the _____ nervous system.",blanks:[{label:"Erection",accept:["parasympathetic"]},{label:"Ejaculation",accept:["sympathetic"]}]},
+  {id:"t1i20",q:"The arteries that supply the stratum functionalis are called _____ arteries; they constrict during menstruation.",blanks:[{label:"Artery type",accept:["spiral"]}]}
+];
+
+const T1M = [
+  {id:"t1m1",q:"Which of the following is NOT a function of Sertoli cells?",opts:["Form blood-testis barrier","Secrete testosterone","Phagocytize excess cytoplasm","Secrete ABP"],c:1},
+  {id:"t1m2",q:"Where does fertilization normally occur?",opts:["Uterus","Vagina","Ampulla of uterine tube","Isthmus of uterine tube"],c:2},
+  {id:"t1m3",q:"The slow block to polyspermy involves:",opts:["Membrane depolarization","Cortical granule exocytosis","Acrosomal reaction","Capacitation"],c:1},
+  {id:"t1m4",q:"Which structure becomes the corpus luteum?",opts:["Primordial follicle","Ruptured vesicular (Graafian) follicle","Corpus albicans","Zona pellucida"],c:1},
+  {id:"t1m5",q:"Primary oocytes are arrested in prophase I until:",opts:["Birth","Puberty","Ovulation","Fertilization"],c:2},
+  {id:"t1m6",q:"Secondary oocytes are arrested in metaphase II until:",opts:["Birth","Puberty","Ovulation","Fertilization"],c:3},
+  {id:"t1m7",q:"Which accessory gland contributes the most volume to semen?",opts:["Prostate gland","Seminal vesicles","Bulbourethral glands","Testes"],c:1},
+  {id:"t1m8",q:"PSA (prostate-specific antigen) is secreted by:",opts:["Seminal vesicles","Prostate gland","Bulbourethral glands","Sertoli cells"],c:1},
+  {id:"t1m9",q:"Which hormone switches from negative to positive feedback just before ovulation?",opts:["Progesterone","Testosterone","Estrogen","Inhibin"],c:2},
+  {id:"t1m10",q:"The thickest layer of the uterine wall is the:",opts:["Perimetrium","Myometrium","Endometrium","Cervix"],c:1},
+  {id:"t1m11",q:"Fraternal (dizygotic) twins result from:",opts:["Splitting of one zygote","Two oocytes fertilized by two sperm","Late separation of the blastocyst","Implantation in two locations"],c:1},
+  {id:"t1m12",q:"Nitric oxide causes erection by:",opts:["Constricting penile arteries","Relaxing smooth muscle in erectile tissue","Stimulating sympathetic neurons","Blocking parasympathetic signals"],c:1},
+  {id:"t1m13",q:"DHT (dihydrotestosterone) is:",opts:["A weaker form of testosterone","Synthesized from estrogen","More potent than testosterone","Secreted by Sertoli cells"],c:2},
+  {id:"t1m14",q:"The zona pellucida is:",opts:["A layer of granulosa cells","A glycoprotein layer around the oocyte","The outer membrane of the sperm","The lining of the uterine tube"],c:1},
+  {id:"t1m15",q:"Which cells convert thecal androgens to estrogens?",opts:["Leydig cells","Sertoli cells","Granulosa cells","Peg cells"],c:2}
+];
+
+const T1MA = {
+  pairs:[
+    {id:"t1ma1",term:"FSH",accept:["anterior pituitary"]},
+    {id:"t1ma2",term:"Testosterone",accept:["interstitial (leydig) cells"]},
+    {id:"t1ma3",term:"Inhibin",accept:["sustentacular (sertoli) cells","granulosa cells"]},
+    {id:"t1ma4",term:"hCG",accept:["chorion of embryo"]},
+    {id:"t1ma5",term:"Progesterone",accept:["corpus luteum"]},
+    {id:"t1ma6",term:"GnRH",accept:["hypothalamus"]},
+    {id:"t1ma7",term:"ABP (Androgen-Binding Protein)",accept:["sustentacular (sertoli) cells"]},
+    {id:"t1ma8",term:"Estrogens",accept:["granulosa cells"]},
+    {id:"t1ma9",term:"Relaxin",accept:["corpus luteum"]},
+    {id:"t1ma10",term:"LH",accept:["anterior pituitary"]}
+  ],
+  options:["Anterior pituitary","Interstitial (Leydig) cells","Sustentacular (Sertoli) cells","Chorion of embryo","Corpus luteum","Hypothalamus","Granulosa cells"]
+};
+
+const T2S = [
+  {id:"t2s1",q:"Describe the pathway of blood through the heart (include all chambers, valves, and great vessels).",kw:["vena cava","right atrium","tricuspid","right ventricle","pulmonary","semilunar","lungs","pulmonary veins","left atrium","mitral","bicuspid","left ventricle","aortic","aorta"],ans:"Deoxygenated blood: Superior/inferior vena cava \u2192 Right atrium \u2192 Tricuspid valve \u2192 Right ventricle \u2192 Pulmonary semilunar valve \u2192 Pulmonary trunk \u2192 Pulmonary arteries \u2192 Lungs (gas exchange). Oxygenated blood: Pulmonary veins \u2192 Left atrium \u2192 Mitral (bicuspid) valve \u2192 Left ventricle \u2192 Aortic semilunar valve \u2192 Aorta \u2192 Systemic circulation."},
+  {id:"t2s2",q:"Explain the Bohr effect and how it relates to O2 delivery to active tissues.",kw:["bohr","hemoglobin","oxygen","co2","ph","affinity","right shift","release","active tissue","dissociation"],ans:"The Bohr effect: increased CO2 and decreased pH (more acidic conditions) reduce hemoglobin's affinity for O2, promoting O2 release (right shift of the O2-Hb dissociation curve). In active tissues (muscles during exercise), metabolism produces more CO2 and H+, lowering local pH. This causes hemoglobin to release more O2 precisely where it is needed most. Conversely, at the lungs (high O2, low CO2, higher pH), hemoglobin binds O2 readily."},
+  {id:"t2s3",q:"Compare and contrast innate vs. adaptive immunity (speed, specificity, memory, components).",kw:["innate","adaptive","nonspecific","specific","fast","slow","memory","barrier","phagocyte","nk","t cell","b cell","antibod"],ans:"Innate immunity: fast response (minutes-hours), nonspecific, no memory, first/second line of defense. Components: skin/mucous membrane barriers, phagocytes (neutrophils, macrophages), NK cells, complement, inflammation, fever. Adaptive immunity: slower initial response (days), highly specific, has memory (faster/stronger on re-exposure). Components: T lymphocytes (cell-mediated), B lymphocytes/antibodies (humoral). MHC molecules present antigens to T cells."},
+  {id:"t2s4",q:"Compare helper T cells vs. cytotoxic T cells (surface marker, MHC restriction, function, killing mechanism).",kw:["cd4","cd8","mhc i","mhc ii","helper","cytotoxic","activate","kill","perforin","granzyme"],ans:"Helper T cells (CD4+): recognize antigens on MHC class II (found on APCs). Function: orchestrate the immune response by secreting cytokines that activate B cells, cytotoxic T cells, and macrophages. Do not directly kill. Cytotoxic T cells (CD8+): recognize antigens on MHC class I (found on all nucleated cells). Function: directly kill infected/abnormal cells via perforin (pore-forming) and granzymes (trigger apoptosis)."},
+  {id:"t2s5",q:"Explain Starling forces / bulk flow at capillaries (BHP, BCOP, filtration vs. reabsorption).",kw:["blood hydrostatic","bhp","colloid osmotic","bcop","filtration","reabsorption","arterial","venous","albumin","net"],ans:"Blood Hydrostatic Pressure (BHP) pushes fluid out of capillaries (filtration). Blood Colloid Osmotic Pressure (BCOP, largely from albumin) pulls fluid into capillaries (reabsorption). At the arterial end: BHP (~35 mmHg) > BCOP (~26 mmHg), so net filtration occurs. At the venous end: BHP (~17 mmHg) < BCOP (~26 mmHg), so net reabsorption occurs. Excess filtered fluid is returned via the lymphatic system."},
+  {id:"t2s6",q:"Describe the steps of an action potential (resting, depolarization, repolarization, hyperpolarization).",kw:["resting","-70","depolarization","sodium","na+","threshold","-55","repolarization","potassium","k+","hyperpolarization","voltage-gated"],ans:"Resting state: membrane at ~-70mV, voltage-gated channels closed. Depolarization: stimulus reaches threshold (~-55mV), voltage-gated Na+ channels open, Na+ rushes in, membrane shoots to ~+30mV. Repolarization: Na+ channels inactivate, voltage-gated K+ channels open, K+ rushes out, membrane returns toward resting. Hyperpolarization: K+ channels are slow to close, excess K+ exits, membrane briefly dips below -70mV (undershoot). Na+/K+ ATPase restores ionic gradients."},
+  {id:"t2s7",q:"Compare the 6 types of neuroglial cells (name, location CNS/PNS, function).",kw:["astrocyte","oligodendrocyte","microglia","ependymal","schwann","satellite","cns","pns","myelin","phagocyt","csf","blood-brain"],ans:"CNS: (1) Astrocytes \u2014 most abundant, form blood-brain barrier, anchor neurons, regulate ions/nutrients. (2) Oligodendrocytes \u2014 form myelin sheaths (one cell can myelinate multiple axons). (3) Microglia \u2014 immune cells (phagocytes) of the CNS. (4) Ependymal cells \u2014 line ventricles, produce/circulate CSF. PNS: (5) Schwann cells \u2014 form myelin sheaths (one cell per internode on one axon). (6) Satellite cells \u2014 surround neuron cell bodies in ganglia, support/regulate."},
+  {id:"t2s8",q:"Describe nephron reabsorption at the PCT vs. DCT (what is reabsorbed, is it hormonally regulated?).",kw:["pct","proximal","dct","distal","glucose","amino acid","sodium","water","obligatory","facultative","aldosterone","adh","regulated","unregulated"],ans:"PCT (Proximal Convoluted Tubule): reabsorbs ~65% of filtrate. Recovers glucose, amino acids, Na+, Cl-, K+, HCO3-, water. Mostly obligatory/unregulated (always occurs regardless of hormonal signals). Uses active transport and osmosis. DCT (Distal Convoluted Tubule): fine-tuning, hormonally regulated. Aldosterone increases Na+ reabsorption (and K+ secretion). ADH increases water reabsorption (also at collecting duct). PTH increases Ca2+ reabsorption. Much smaller volume reabsorbed."},
+  {id:"t2s9",q:"Explain the role of ADH and aldosterone in kidney function.",kw:["adh","antidiuretic","water","aquaporin","collecting duct","aldosterone","sodium","potassium","dct","adrenal","concentrated","dilute"],ans:"ADH (antidiuretic hormone, vasopressin): released from posterior pituitary in response to high blood osmolarity or low blood volume. Inserts aquaporin-2 channels into the collecting duct, increasing water reabsorption, producing concentrated urine. Aldosterone: released from adrenal cortex in response to angiotensin II or high K+. Acts on DCT and collecting duct to increase Na+ reabsorption (and water follows) and K+ secretion. Both raise blood volume and blood pressure."},
+  {id:"t2s10",q:"Describe the divisions of the nervous system (CNS, PNS, somatic, autonomic, sympathetic, parasympathetic).",kw:["cns","brain","spinal cord","pns","cranial","spinal nerves","somatic","voluntary","autonomic","involuntary","sympathetic","fight","parasympathetic","rest"],ans:"CNS: brain + spinal cord (integration/processing). PNS: cranial nerves (12 pairs) + spinal nerves (31 pairs), connecting CNS to body. PNS divides into: Somatic NS \u2014 voluntary control of skeletal muscles (one motor neuron, always excitatory, ACh). Autonomic NS \u2014 involuntary control of smooth muscle, cardiac muscle, glands. Two-neuron chain. Subdivisions: Sympathetic \u2014 fight-or-flight (thoracolumbar origin, short pre/long postganglionic, NE). Parasympathetic \u2014 rest-and-digest (craniosacral origin, long pre/short postganglionic, ACh)."},
+  {id:"t2s11",q:"Explain CO2 transport in blood (3 methods with percentages).",kw:["bicarbonate","hco3","70%","carbaminohemoglobin","23%","dissolved","7%","carbonic anhydrase","plasma"],ans:"Three methods: (1) As bicarbonate ions (HCO3-) in plasma: ~70%. CO2 enters RBC, carbonic anhydrase converts CO2 + H2O \u2192 H2CO3 \u2192 HCO3- + H+. HCO3- is transported out via chloride shift. (2) Bound to hemoglobin as carbaminohemoglobin: ~23%. CO2 binds to amino groups on globin chains (not the heme). (3) Dissolved directly in plasma: ~7%."},
+  {id:"t2s12",q:"List the formed elements of blood and their functions.",kw:["erythrocyte","red blood cell","leukocyte","white blood cell","platelet","thrombocyte","oxygen","immune","clot","hemoglobin","neutrophil","lymphocyte"],ans:"Erythrocytes (RBCs): most abundant, contain hemoglobin, transport O2 and some CO2, anucleate, biconcave disc. Leukocytes (WBCs): immune defense. Granulocytes: neutrophils (phagocytes, most abundant WBC), eosinophils (parasites, allergies), basophils (histamine/heparin). Agranulocytes: lymphocytes (T cells, B cells, NK cells \u2014 adaptive/innate immunity), monocytes (become macrophages, phagocytosis). Platelets (thrombocytes): cell fragments from megakaryocytes, essential for hemostasis/clotting."}
+];
+
+const T2I = [
+  {id:"t2i1",q:"Air pathway: Nose \u2192 Pharynx \u2192 _____ \u2192 _____ \u2192 Primary bronchi \u2192 _____ \u2192 Tertiary bronchi \u2192 Bronchioles \u2192 Terminal bronchioles \u2192 _____ \u2192 Alveolar ducts \u2192 Alveoli",blanks:[{label:"After pharynx",accept:["larynx"]},{label:"After larynx",accept:["trachea"]},{label:"After primary bronchi",accept:["secondary bronchi","lobar bronchi"]},{label:"After terminal bronchioles",accept:["respiratory bronchioles"]}]},
+  {id:"t2i2",q:"Blood flow: Vena cava \u2192 _____ \u2192 Tricuspid valve \u2192 _____ \u2192 _____ valve \u2192 Pulmonary trunk \u2192 Lungs \u2192 _____ \u2192 Left atrium \u2192 _____ valve \u2192 _____ \u2192 Aortic semilunar valve \u2192 Aorta",blanks:[{label:"After vena cava",accept:["right atrium"]},{label:"After tricuspid",accept:["right ventricle"]},{label:"Valve to pulmonary trunk",accept:["pulmonary semilunar","pulmonary"]},{label:"From lungs",accept:["pulmonary veins"]},{label:"Valve after left atrium",accept:["mitral","bicuspid"]},{label:"After mitral valve",accept:["left ventricle"]}]},
+  {id:"t2i3",q:"Urine pathway: Glomerulus \u2192 _____ \u2192 PCT \u2192 _____ loop of Henle \u2192 _____ loop of Henle \u2192 DCT \u2192 _____ \u2192 Ureter",blanks:[{label:"After glomerulus",accept:["bowman's capsule","bowmans capsule","glomerular capsule"]},{label:"First loop",accept:["descending"]},{label:"Second loop",accept:["ascending"]},{label:"After DCT",accept:["collecting duct"]}]},
+  {id:"t2i4",q:"Leukocyte frequency order (most to least abundant):",blanks:[{label:"Most abundant",accept:["neutrophil"]},{label:"2nd",accept:["lymphocyte"]},{label:"3rd",accept:["monocyte"]},{label:"4th",accept:["eosinophil"]},{label:"Least abundant",accept:["basophil"]}]},
+  {id:"t2i5",q:"Universal donor blood type is _____; universal recipient is _____.",blanks:[{label:"Donor",accept:["o","o-","o negative","type o"]},{label:"Recipient",accept:["ab","ab+","ab positive","type ab"]}]},
+  {id:"t2i6",q:"CNS myelin is formed by _____; PNS myelin is formed by _____.",blanks:[{label:"CNS",accept:["oligodendrocyte"]},{label:"PNS",accept:["schwann cell","schwann"]}]},
+  {id:"t2i7",q:"The resting membrane potential of a neuron is approximately _____ mV.",blanks:[{label:"mV",accept:["-70"]}]},
+  {id:"t2i8",q:"Threshold potential is approximately _____ mV.",blanks:[{label:"mV",accept:["-55"]}]},
+  {id:"t2i9",q:"The relay station of the brain that routes all senses EXCEPT smell is the _____.",blanks:[{label:"Structure",accept:["thalamus"]}]},
+  {id:"t2i10",q:"The brain region controlling heart rate, blood pressure, and breathing is the _____.",blanks:[{label:"Region",accept:["medulla oblongata","medulla"]}]},
+  {id:"t2i11",q:"Broca's area controls _____; Wernicke's area controls _____.",blanks:[{label:"Broca's",accept:["speech production","motor speech","speaking"]},{label:"Wernicke's",accept:["speech comprehension","language comprehension","understanding speech","understanding language"]}]},
+  {id:"t2i12",q:"The cranial nerve for smell is CN _____ (_____); for vision is CN _____ (_____).",blanks:[{label:"Smell CN #",accept:["i","1"]},{label:"Smell name",accept:["olfactory"]},{label:"Vision CN #",accept:["ii","2"]},{label:"Vision name",accept:["optic"]}]},
+  {id:"t2i13",q:"The vagus nerve is CN _____ and is the major _____ nerve.",blanks:[{label:"CN #",accept:["x","10"]},{label:"Division",accept:["parasympathetic"]}]},
+  {id:"t2i14",q:"CO2 is mostly transported as _____ (~70%) in the blood.",blanks:[{label:"Form",accept:["bicarbonate","hco3","bicarbonate ions"]}]},
+  {id:"t2i15",q:"The organ of Corti is located in the _____ and is responsible for _____.",blanks:[{label:"Location",accept:["cochlea"]},{label:"Function",accept:["hearing","auditory","sound"]}]},
+  {id:"t2i16",q:"Rods detect _____ vision; cones detect _____ vision and are concentrated at the _____.",blanks:[{label:"Rods",accept:["dim light","black and white","scotopic","low light","night"]},{label:"Cones",accept:["color","photopic","bright light","daytime"]},{label:"Concentration",accept:["fovea","fovea centralis","macula"]}]},
+  {id:"t2i17",q:"The _____ is the blind spot of the eye (where the optic nerve exits).",blanks:[{label:"Structure",accept:["optic disc","optic disk"]}]},
+  {id:"t2i18",q:"ADH increases water reabsorption by inserting _____ into the collecting duct.",blanks:[{label:"Protein",accept:["aquaporin","aquaporin-2","aquaporins"]}]},
+  {id:"t2i19",q:"_____ is the immune cell of the CNS that phagocytizes pathogens.",blanks:[{label:"Cell type",accept:["microglia"]}]},
+  {id:"t2i20",q:"The three heart wall layers from outer to inner:",blanks:[{label:"Outermost",accept:["epicardium","visceral pericardium"]},{label:"Middle",accept:["myocardium"]},{label:"Innermost",accept:["endocardium"]}]}
+];
+
+const T2M = [
+  {id:"t2m1",q:"Which factor causes a RIGHT shift in the O2-Hb dissociation curve?",opts:["Increased pH","Decreased temperature","Increased CO2","Decreased BPG"],c:2},
+  {id:"t2m2",q:"The most abundant WBC is:",opts:["Lymphocyte","Monocyte","Neutrophil","Eosinophil"],c:2},
+  {id:"t2m3",q:"A person with type AB blood has which antibodies?",opts:["Anti-A","Anti-B","Both anti-A and anti-B","Neither"],c:3},
+  {id:"t2m4",q:"Which phase of the action potential involves K+ rushing out?",opts:["Depolarization","Repolarization","Resting","Hyperpolarization"],c:1},
+  {id:"t2m5",q:"Saltatory conduction occurs at:",opts:["Axon hillock","Nodes of Ranvier","Synaptic cleft","Dendrites"],c:1},
+  {id:"t2m6",q:"The cerebellum is primarily responsible for:",opts:["Speech production","Visual processing","Coordination and balance","Emotion and memory"],c:2},
+  {id:"t2m7",q:"Which structure equalizes pressure in the middle ear?",opts:["Oval window","Round window","Eustachian (auditory) tube","Cochlea"],c:2},
+  {id:"t2m8",q:"In the nephron, the PCT reabsorbs approximately what % of filtrate water?",opts:["25%","45%","65%","85%"],c:2},
+  {id:"t2m9",q:"Atrial natriuretic peptide (ANP) causes:",opts:["Increased Na+ reabsorption","Decreased Na+ reabsorption","Increased water reabsorption","Vasoconstriction"],c:1},
+  {id:"t2m10",q:"The thickest wall in the heart belongs to the:",opts:["Right atrium","Left atrium","Right ventricle","Left ventricle"],c:3},
+  {id:"t2m11",q:"Which glial cell forms myelin in the CNS?",opts:["Schwann cell","Astrocyte","Oligodendrocyte","Microglia"],c:2},
+  {id:"t2m12",q:"MHC class I is found on:",opts:["Only APCs","All nucleated cells","Only T cells","Only B cells"],c:1},
+  {id:"t2m13",q:"The fovea centralis contains:",opts:["Rods only","Cones only","Both rods and cones","Neither"],c:1},
+  {id:"t2m14",q:"Static equilibrium is detected by:",opts:["Semicircular canals","Cochlea","Utricle and saccule","Organ of Corti"],c:2},
+  {id:"t2m15",q:"NK (Natural Killer) cells are part of which immune defense?",opts:["Adaptive immunity","Innate immunity","Humoral immunity","Cell-mediated immunity only"],c:1}
+];
+
+const T2MA = {
+  pairs:[
+    {id:"t2ma1",term:"CN I (Olfactory)",accept:["smell"]},
+    {id:"t2ma2",term:"CN II (Optic)",accept:["vision"]},
+    {id:"t2ma3",term:"CN III (Oculomotor)",accept:["eye movement, pupil constriction"]},
+    {id:"t2ma4",term:"CN V (Trigeminal)",accept:["face sensation, chewing"]},
+    {id:"t2ma5",term:"CN VII (Facial)",accept:["facial expression, taste (anterior 2/3)"]},
+    {id:"t2ma6",term:"CN VIII (Vestibulocochlear)",accept:["hearing and balance"]},
+    {id:"t2ma7",term:"CN X (Vagus)",accept:["major parasympathetic (heart, lungs, gi)"]},
+    {id:"t2ma8",term:"CN XI (Accessory)",accept:["scm and trapezius movement"]},
+    {id:"t2ma9",term:"CN XII (Hypoglossal)",accept:["tongue movement"]},
+    {id:"t2ma10",term:"CN IX (Glossopharyngeal)",accept:["taste (posterior 1/3), swallowing"]}
+  ],
+  options:["Smell","Vision","Eye movement, pupil constriction","Face sensation, chewing","Facial expression, taste (anterior 2/3)","Hearing and balance","Major parasympathetic (heart, lungs, GI)","SCM and trapezius movement","Tongue movement","Taste (posterior 1/3), swallowing"]
+};
+
+// ── Grading Logic ──
+
+function blankOk(input, accept) {
+  var n = input.trim().toLowerCase();
+  if (n.length < 2) return false;
+  return accept.some(function(a) {
+    var an = a.toLowerCase();
+    return n === an || n.includes(an) || an.includes(n);
+  });
+}
+
+function shortOk(input, kw) {
+  if (!input.trim()) return false;
+  var lo = input.toLowerCase();
+  var hits = kw.filter(function(k) { return lo.includes(k.toLowerCase()); });
+  return hits.length >= Math.ceil(kw.length * 0.4);
+}
+
+// ── State Management ──
+
+var state = {
+  activeTest: "test1",
+  t1Tab: "short", t2Tab: "short",
+  t1Short: {}, t1Id: {}, t1Mc: {}, t1Match: {},
+  t2Short: {}, t2Id: {}, t2Mc: {}, t2Match: {},
+  t1Checked: false, t2Checked: false
+};
+
+function loadState() {
+  try {
+    var saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      var parsed = JSON.parse(saved);
+      Object.assign(state, parsed);
+    }
+  } catch(e) {}
+}
+
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+
+function setState(key, val) {
+  state[key] = val;
+  saveState();
+  render();
+}
+
+// ── Counting ──
+
+function countShort(qs, ans) {
+  var answered = 0, correct = 0;
+  qs.forEach(function(q) {
+    if ((ans[q.id] || "").trim()) answered++;
+    if (shortOk(ans[q.id] || "", q.kw)) correct++;
+  });
+  return { answered: answered, correct: correct, total: qs.length };
+}
+
+function countId(qs, ans) {
+  var answered = 0, correct = 0;
+  qs.forEach(function(q) {
+    var anyFilled = q.blanks.some(function(b, i) { return (ans[q.id + "-" + i] || "").trim().length > 0; });
+    var allCorrect = q.blanks.every(function(b, i) { return blankOk(ans[q.id + "-" + i] || "", b.accept); });
+    if (anyFilled) answered++;
+    if (allCorrect) correct++;
+  });
+  return { answered: answered, correct: correct, total: qs.length };
+}
+
+function countMc(qs, ans) {
+  var answered = 0, correct = 0;
+  qs.forEach(function(q) {
+    if (ans[q.id] !== undefined) answered++;
+    if (ans[q.id] === q.c) correct++;
+  });
+  return { answered: answered, correct: correct, total: qs.length };
+}
+
+function countMatch(sec, ans) {
+  var answered = 0, correct = 0;
+  sec.pairs.forEach(function(p) {
+    if ((ans[p.id] || "").length > 0) answered++;
+    if (p.accept.some(function(a) { return (ans[p.id] || "").toLowerCase() === a.toLowerCase(); })) correct++;
+  });
+  return { answered: answered, correct: correct, total: sec.pairs.length };
+}
+
+// ── Render ──
+
+function h(tag, attrs, children) {
+  var el = document.createElement(tag);
+  if (attrs) Object.keys(attrs).forEach(function(k) {
+    if (k === "className") el.className = attrs[k];
+    else if (k === "innerHTML") el.innerHTML = attrs[k];
+    else if (k.startsWith("on")) el.addEventListener(k.slice(2).toLowerCase(), attrs[k]);
+    else if (k === "disabled" && attrs[k]) el.disabled = true;
+    else if (k === "selected" && attrs[k]) el.selected = true;
+    else if (k === "value") el.value = attrs[k];
+    else el.setAttribute(k, attrs[k]);
+  });
+  if (children) {
+    if (typeof children === "string") el.textContent = children;
+    else if (Array.isArray(children)) children.forEach(function(c) { if (c) el.appendChild(c); });
+    else el.appendChild(children);
+  }
+  return el;
+}
+
+function render() {
+  var app = document.getElementById("app");
+  app.innerHTML = "";
+
+  var isT1 = state.activeTest === "test1";
+  var shortQs = isT1 ? T1S : T2S;
+  var idQs = isT1 ? T1I : T2I;
+  var mcQs = isT1 ? T1M : T2M;
+  var matchSec = isT1 ? T1MA : T2MA;
+  var shortAns = isT1 ? state.t1Short : state.t2Short;
+  var idAns = isT1 ? state.t1Id : state.t2Id;
+  var mcAns = isT1 ? state.t1Mc : state.t2Mc;
+  var matchAns = isT1 ? state.t1Match : state.t2Match;
+  var checked = isT1 ? state.t1Checked : state.t2Checked;
+  var subTab = isT1 ? state.t1Tab : state.t2Tab;
+
+  var sShort = countShort(shortQs, shortAns);
+  var sId = countId(idQs, idAns);
+  var sMc = countMc(mcQs, mcAns);
+  var sMatch = countMatch(matchSec, matchAns);
+
+  var totalQ = sShort.total + sId.total + sMc.total + sMatch.total;
+  var totalAnswered = sShort.answered + sId.answered + sMc.answered + sMatch.answered;
+  var totalCorrect = sShort.correct + sId.correct + sMc.correct + sMatch.correct;
+  var pct = totalQ > 0 ? Math.round((totalCorrect / totalQ) * 100) : 0;
+  var grade = pct >= 90 ? "A" : pct >= 80 ? "B" : pct >= 70 ? "C" : pct >= 60 ? "D" : "F";
+
+  // Header
+  app.appendChild(h("h1", null, "A&P II Practice Exams"));
+  app.appendChild(h("p", {className: "subtitle"}, "Pearson Human Anatomy & Physiology, 3rd Ed. \u2014 Erin C. Amerman"));
+
+  // Stats bar
+  var statsBar = h("div", {className: "stats-bar"});
+  var scoreClass = checked ? (pct >= 70 ? " green" : " red") : "";
+  statsBar.appendChild(h("div", {className: "stat"}, [
+    h("div", {className: "stat-value"}, totalAnswered + "/" + totalQ),
+    h("div", {className: "stat-label"}, "Answered")
+  ]));
+  statsBar.appendChild(h("div", {className: "stat"}, [
+    h("div", {className: "stat-value" + scoreClass}, checked ? totalCorrect + "/" + totalQ : "\u2014"),
+    h("div", {className: "stat-label"}, "Correct")
+  ]));
+  statsBar.appendChild(h("div", {className: "stat"}, [
+    h("div", {className: "stat-value" + scoreClass}, checked ? pct + "%" : "\u2014"),
+    h("div", {className: "stat-label"}, "Score")
+  ]));
+  statsBar.appendChild(h("div", {className: "stat"}, [
+    h("div", {className: "stat-value" + scoreClass}, checked ? grade : "\u2014"),
+    h("div", {className: "stat-label"}, "Letter Grade")
+  ]));
+  app.appendChild(statsBar);
+
+  // Test tabs
+  var testTabs = h("div", {className: "tabs"});
+  testTabs.appendChild(h("div", {className: "tab" + (isT1 ? " active" : ""), onClick: function() { setState("activeTest", "test1"); }}, "Test 1 \u2014 Reproductive System (Ch 26)"));
+  testTabs.appendChild(h("div", {className: "tab" + (!isT1 ? " active" : ""), onClick: function() { setState("activeTest", "test2"); }}, "Test 2 \u2014 Final Exam (Comprehensive)"));
+  app.appendChild(testTabs);
+
+  // Sub-tabs
+  var subTabs = h("div", {className: "sub-tabs"});
+  var tabDefs = [
+    {key:"short", label:"Short Answer (" + sShort.answered + "/" + sShort.total + ")"},
+    {key:"id", label:"Identification (" + sId.answered + "/" + sId.total + ")"},
+    {key:"mc", label:"Multiple Choice (" + sMc.answered + "/" + sMc.total + ")"},
+    {key:"match", label:"Matching (" + sMatch.answered + "/" + sMatch.total + ")"}
+  ];
+  tabDefs.forEach(function(t) {
+    subTabs.appendChild(h("div", {
+      className: "sub-tab" + (subTab === t.key ? " active" : ""),
+      onClick: function() { setState(isT1 ? "t1Tab" : "t2Tab", t.key); }
+    }, t.label));
+  });
+  app.appendChild(subTabs);
+
+  // Actions
+  var actions = h("div", {className: "actions"});
+  actions.appendChild(h("button", {className: "btn btn-secondary", onClick: function() { resetQuiz(); }}, "Reset Quiz"));
+  if (checked) {
+    actions.appendChild(h("button", {className: "btn btn-secondary", onClick: function() { unlockQuiz(); }}, "Edit Answers"));
+  }
+  var checkBtn = h("button", {
+    className: "btn btn-primary",
+    disabled: checked,
+    onClick: function() { checkAnswers(); }
+  }, checked ? "Answers Checked" : "Check Answers");
+  actions.appendChild(checkBtn);
+  app.appendChild(actions);
+
+  app.appendChild(h("div", {className: "divider"}));
+
+  // Content
+  if (subTab === "short") renderShort(app, shortQs, shortAns, checked, isT1);
+  else if (subTab === "id") renderId(app, idQs, idAns, checked, isT1);
+  else if (subTab === "mc") renderMc(app, mcQs, mcAns, checked, isT1);
+  else if (subTab === "match") renderMatch(app, matchSec, matchAns, checked, isT1);
+
+  // Footer
+  app.appendChild(h("div", {className: "divider"}));
+  app.appendChild(h("p", {className: "footer"}, "A&P II Practice Exam \u2014 " + totalQ + " questions \u2014 " + (isT1 ? "Chapter 26 (Reproductive System)" : "Final Exam (Comprehensive)") + ". Progress saves automatically."));
+}
+
+function renderShort(app, qs, ans, checked, isT1) {
+  app.appendChild(h("p", {className: "section-note"}, "Answer in complete sentences. Keywords are checked automatically (40% threshold)."));
+  qs.forEach(function(q, idx) {
+    var val = ans[q.id] || "";
+    var isOk = checked && shortOk(val, q.kw);
+    var isWrong = checked && val.trim().length > 0 && !isOk;
+    var cardClass = "card";
+    if (checked) cardClass += isOk ? " correct" : isWrong ? " incorrect" : "";
+    else if (val.trim()) cardClass += " answered";
+
+    var card = h("div", {className: cardClass});
+    card.appendChild(h("div", {className: "q-number"}, "Q" + (idx + 1) + (checked ? (isOk ? " \u2714 Correct" : isWrong ? " \u2718 Review" : " \u2014 Unanswered") : (val.trim() ? " \u2022 Answered" : ""))));
+    card.appendChild(h("div", {className: "q-text"}, q.q));
+
+    var ta = h("textarea", {
+      value: val,
+      placeholder: "Type your answer here...",
+      disabled: checked
+    });
+    ta.addEventListener("input", function(e) {
+      var key = isT1 ? "t1Short" : "t2Short";
+      state[key][q.id] = e.target.value;
+      saveState();
+    });
+    card.appendChild(ta);
+
+    if (checked) {
+      var tone = isOk ? "success" : (val.trim() ? "warning" : "neutral");
+      var ma = h("div", {className: "model-answer " + tone});
+      ma.appendChild(h("div", {className: "model-answer-title"}, "Model Answer"));
+      ma.appendChild(h("p", null, q.ans));
+      card.appendChild(ma);
+    }
+    app.appendChild(card);
+  });
+}
+
+function renderId(app, qs, ans, checked, isT1) {
+  app.appendChild(h("p", {className: "section-note"}, "Fill in each blank. Answers are case-insensitive."));
+  qs.forEach(function(q, idx) {
+    var allCorrect = checked && q.blanks.every(function(b, i) { return blankOk(ans[q.id + "-" + i] || "", b.accept); });
+    var anyFilled = q.blanks.some(function(b, i) { return (ans[q.id + "-" + i] || "").trim().length > 0; });
+    var cardClass = "card";
+    if (checked) cardClass += allCorrect ? " correct" : anyFilled ? " incorrect" : "";
+    else if (anyFilled) cardClass += " answered";
+
+    var card = h("div", {className: cardClass});
+    card.appendChild(h("div", {className: "q-number"}, "Q" + (idx + 1) + (checked ? (allCorrect ? " \u2714 Correct" : anyFilled ? " \u2718 Incorrect" : " \u2014 Unanswered") : (anyFilled ? " \u2022 In progress" : ""))));
+    card.appendChild(h("div", {className: "q-text"}, q.q));
+
+    q.blanks.forEach(function(b, i) {
+      var key = q.id + "-" + i;
+      var val = ans[key] || "";
+      var ok = checked && blankOk(val, b.accept);
+      var wrong = checked && val.trim().length > 0 && !ok;
+
+      var row = h("div", {className: "blank-row"});
+      row.appendChild(h("span", {className: "blank-label"}, b.label + ":"));
+      var inp = h("input", {type: "text", value: val, placeholder: "Blank " + (i + 1), disabled: checked});
+      inp.addEventListener("input", function(e) {
+        var stateKey = isT1 ? "t1Id" : "t2Id";
+        state[stateKey][key] = e.target.value;
+        saveState();
+      });
+      var wrap = h("div", {className: "blank-input"}, inp);
+      row.appendChild(wrap);
+      if (checked) {
+        row.appendChild(h("span", {className: "blank-result " + (ok ? "correct" : "incorrect")}, ok ? "\u2714" : b.accept[0]));
+      }
+      card.appendChild(row);
+    });
+    app.appendChild(card);
+  });
+}
+
+function renderMc(app, qs, ans, checked, isT1) {
+  app.appendChild(h("p", {className: "section-note"}, "Select the best answer for each question."));
+  var letters = ["A","B","C","D","E","F"];
+  qs.forEach(function(q, idx) {
+    var sel = ans[q.id];
+    var answered = sel !== undefined;
+    var correct = checked && sel === q.c;
+    var cardClass = "card";
+    if (checked) cardClass += correct ? " correct" : answered ? " incorrect" : "";
+    else if (answered) cardClass += " answered";
+
+    var card = h("div", {className: cardClass});
+    card.appendChild(h("div", {className: "q-number"}, "Q" + (idx + 1) + (checked ? (correct ? " \u2714 Correct" : answered ? " \u2718 Incorrect" : " \u2014 Unanswered") : (answered ? " \u2022 Answered" : ""))));
+    card.appendChild(h("div", {className: "q-text"}, q.q));
+
+    var opts = h("div", {className: "mc-options"});
+    q.opts.forEach(function(opt, i) {
+      var optClass = "mc-opt";
+      if (checked) {
+        optClass += " disabled";
+        if (i === q.c) optClass += " correct-answer";
+        else if (sel === i && sel !== q.c) optClass += " wrong-answer";
+      } else {
+        if (sel === i) optClass += " selected";
+      }
+      var optEl = h("div", {className: optClass}, letters[i] + ". " + opt);
+      if (!checked) {
+        optEl.addEventListener("click", function() {
+          var stateKey = isT1 ? "t1Mc" : "t2Mc";
+          state[stateKey][q.id] = i;
+          saveState();
+          render();
+        });
+      }
+      opts.appendChild(optEl);
+    });
+    card.appendChild(opts);
+    app.appendChild(card);
+  });
+}
+
+function renderMatch(app, sec, ans, checked, isT1) {
+  app.appendChild(h("p", {className: "section-note"}, "Match each term to its correct definition/source using the dropdown."));
+  sec.pairs.forEach(function(p, idx) {
+    var val = ans[p.id] || "";
+    var ok = checked && p.accept.some(function(a) { return val.toLowerCase() === a.toLowerCase(); });
+    var wrong = checked && val.length > 0 && !ok;
+
+    var row = h("div", {className: "match-row"});
+    row.appendChild(h("span", {className: "match-term"}, (idx + 1) + ". " + p.term));
+
+    var selectWrap = h("div", {className: "match-select"});
+    var sel = h("select", {disabled: checked});
+    sel.appendChild(h("option", {value: ""}, "-- Select --"));
+    sec.options.forEach(function(o) {
+      var opt = h("option", {value: o, selected: val === o}, o);
+      sel.appendChild(opt);
+    });
+    sel.addEventListener("change", function(e) {
+      var stateKey = isT1 ? "t1Match" : "t2Match";
+      state[stateKey][p.id] = e.target.value;
+      saveState();
+    });
+    selectWrap.appendChild(sel);
+    row.appendChild(selectWrap);
+
+    if (checked) {
+      if (ok) {
+        row.appendChild(h("span", {className: "match-result correct"}, "\u2714"));
+      } else {
+        var correctOpt = sec.options.find(function(o) { return p.accept.some(function(a) { return o.toLowerCase() === a.toLowerCase(); }); }) || p.accept[0];
+        row.appendChild(h("span", {className: "match-result incorrect"}, correctOpt));
+      }
+    }
+    app.appendChild(row);
+  });
+}
+
+function resetQuiz() {
+  var isT1 = state.activeTest === "test1";
+  if (isT1) {
+    state.t1Short = {}; state.t1Id = {}; state.t1Mc = {}; state.t1Match = {};
+    state.t1Checked = false;
+  } else {
+    state.t2Short = {}; state.t2Id = {}; state.t2Mc = {}; state.t2Match = {};
+    state.t2Checked = false;
+  }
+  saveState();
+  render();
+}
+
+function checkAnswers() {
+  var isT1 = state.activeTest === "test1";
+  if (isT1) state.t1Checked = true;
+  else state.t2Checked = true;
+  saveState();
+  render();
+}
+
+function unlockQuiz() {
+  var isT1 = state.activeTest === "test1";
+  if (isT1) state.t1Checked = false;
+  else state.t2Checked = false;
+  saveState();
+  render();
+}
+
+// ── Init ──
+loadState();
+render();
+
+})();
+</script>
+</body>
+</html>
