@@ -380,8 +380,8 @@ function h(tag, attrs, children) {
     if (k === "className") el.className = attrs[k];
     else if (k === "innerHTML") el.innerHTML = attrs[k];
     else if (k.startsWith("on")) el.addEventListener(k.slice(2).toLowerCase(), attrs[k]);
-    else if (k === "disabled" && attrs[k]) el.disabled = true;
-    else if (k === "selected" && attrs[k]) el.selected = true;
+    else if (k === "disabled") { if (attrs[k]) el.disabled = true; }
+    else if (k === "selected") { if (attrs[k]) el.selected = true; }
     else if (k === "value") el.value = attrs[k];
     else el.setAttribute(k, attrs[k]);
   });
